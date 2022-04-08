@@ -43,9 +43,9 @@ public class Server{
     //метод для работой c сокетом клиента
     private void handleConnection(Socket socket) {
         try (
-            socket;
-            final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            final var out = new BufferedOutputStream(socket.getOutputStream());
+                socket;
+                final var in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                final var out = new BufferedOutputStream(socket.getOutputStream());
         ) {
             // read only request line for simplicity
             // must be in form GET /path HTTP/1.1
@@ -57,7 +57,14 @@ public class Server{
                 return;
             }
 
-            final var path = parts[1];
+            final var pathAndQuery = parts[1];
+
+            System.out.println("Параметры");
+            var parsResultParams = Request.getQueryParams(pathAndQuery);
+            var path = Request.getQueryParamsPath(pathAndQuery);
+            System.out.println(parsResultParams);
+            System.out.println(path);
+
             if (!VALID_PATHS.contains(path)) {
                 out.write((
                         "HTTP/1.1 404 Not Found\r\n" +
